@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.aspectj.weaver.ast.Or;
@@ -233,6 +234,9 @@ public class StreamApiTest {
         // keyin map ochib xar bitta zakaz uchun produktlar
         // sonini sanash kerak keyn ularni count boyicha saralb
         // 10 ta eng counti kattasini chiqarish kerak
+        List<Customer> mySolution = orderRepo.findAll().stream()
+                .filter(order -> order.getOrderDate().getYear()==2021)
+                .
     }
 
 
