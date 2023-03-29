@@ -6,6 +6,7 @@ import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 import org.aspectj.weaver.ast.Or;
@@ -154,6 +155,16 @@ public class StreamApiTest {
         // yordam: birinchi shu sanadagi hamma orderni olib
         // keyn har bir orderni produktlarini listga yiging
         // keyn narximi stream average bilan hisoblang
+         double mySolution = orderRepo.findAll().stream()
+                .filter(order -> order.getOrderDate().isEqual(LocalDate.of(2021,3,15)))
+                .flatMap(order -> order.getProducts().stream())
+                        .mapToDouble(Product::getPrice)
+                                .average().getAsDouble();
+
+
+
+
+        Assertions.assertEquals(mySolution,expected);
     }
 
     //6 chi vazifa
@@ -165,6 +176,13 @@ public class StreamApiTest {
         // yordam: birinchi shu sanadagi hamma orderni olib
         // keyn har bir orderni produktlarini listga yiging
         // keyn narximi stream sum bilan hisoblang
+        double mySolution = orderRepo.findAll().stream()
+                .filter(order -> order.getOrderDate().isBefore(LocalDate.of(2021,3,1)))
+                .filter(order -> order.getOrderDate().isAfter(LocalDate.of(2021,2,1)))
+                .flatMap(order -> order.getProducts().stream())
+                .mapToDouble(Product::getPrice)
+                .sum();
+        Assertions.assertEquals(mySolution,expected);
     }
 
     //7 chi vazifa
@@ -176,6 +194,14 @@ public class StreamApiTest {
         // yordam: produktni kategoriya boyicha filter qiling
         // keyn streamdan DoubleStreamga o'ting va
         // summary statisticsni chiqaring
+
+        DoubleSummaryStatistics mySolution =  productRepo.findAll().stream()
+                .filter(product -> product.getCategory().equalsIgnoreCase("Books"))
+                .mapToDouble(Product::getPrice)
+                .summaryStatistics();
+        System.out.println(mySolution.toString());
+        System.out.println(expected.toString());
+
     }
 
     //8 chi vazifa
@@ -187,6 +213,12 @@ public class StreamApiTest {
         // yordam (murakkamroq): birinchi shu sanadagi orderlarni olin
         // keyn har bir orderga tegishli produktni
         // olish kerak
+        List<Product> mySolution = orderRepo.findAll().stream()
+                .filter(order -> order.getOrderDate().isEqual(LocalDate.of(2021,3,15)))
+                .flatMap(order -> order.getProducts().stream())
+                .distinct()
+                .collect(Collectors.toList());
+        Assertions.assertEquals(mySolution,expected);
     }
 
     //9 chi vazifa
