@@ -2,6 +2,7 @@ package uz.najottalim.demo.streamapi;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
@@ -120,6 +121,12 @@ public class StreamApiTest {
         // shu oraliqdagi zakazlarni olib
         // zakaz qilgan customerni tier boyicha filter qilib
         // chiqarish kerak
+        List<Order> orders = orderRepo.findAll();
+        List<Order> mySolution = orders.stream().filter(order -> order.getOrderDate().isAfter(LocalDate.of(2021, 2, 1)))
+                .filter(order -> order.getOrderDate().isBefore(LocalDate.of(2021, 4, 1)))
+                .filter(order -> order.getCustomer().getTier() == 2)
+                .collect(Collectors.toList());
+        Assertions.assertEquals(mySolution,solution4_1());
     }
 
     //4 chi vazifa
@@ -131,6 +138,11 @@ public class StreamApiTest {
         // yordam:
         // birinchi filter keyn map order.getCustomer qilib
         // customerlarni olsa boladi
+        List<String> mySolution = orderRepo.findAll().stream()
+                .filter(order -> order.getStatus().equalsIgnoreCase("NEW"))
+                .map(order -> order.getCustomer().getName())
+                .collect(Collectors.toList());
+        Assertions.assertEquals(mySolution,expected);
     }
 
     //5 chi vazifa
