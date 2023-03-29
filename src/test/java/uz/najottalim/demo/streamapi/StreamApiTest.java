@@ -92,13 +92,21 @@ public class StreamApiTest {
     @DisplayName("category = “Toys” bo'lgan produktlarni oling va narxiga 10% diskountga o'zgartiring")
     public void exercise3() {
         List<Product> expected = solution3();
+
+        List<Product> products = productRepo.findAll();
 //         yordam: filter qilgandan song yangi produkt oching, chunki 10% diskount bilan
 //        produkt qaytarilishi kerak
-//        List<Product> yourSolution = productRepo.findAll().stream().filter()...
+        List<Product> mySolution = products.stream()
+                .filter(product -> product.getCategory().equalsIgnoreCase("Toys"))
+                 .collect(Collectors.toList());
+        mySolution.forEach(product -> product.setPrice(product.getPrice()*0.9));
+
+
+
 
 //         pastdagi qator kommentdan ochilsin va method run qilinsin
 //         yourSolution list yaratilgandan keyin
-//        Assertions.assertEquals(expected, mySolution);
+        Assertions.assertEquals(expected, mySolution);
     }
 
 
