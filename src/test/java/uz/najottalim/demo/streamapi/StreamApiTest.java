@@ -5,10 +5,7 @@ import java.time.Month;
 import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.Assertions;
@@ -360,6 +357,13 @@ public class StreamApiTest {
             "order idni order produkt kountiga mapini oling")
     public void exercise11() {
         Map<Long, Integer> expected = solution11();
+        Map<Long, Integer> collect = orderRepo.findAll().stream()
+                .collect(Collectors.toMap(
+                        order -> order.getId(),
+                        order -> order.getProducts().size()
+                ));
+        //System.out.println(collect);
+        Assertions.assertEquals(collect,expected);
     }
 
 
