@@ -420,13 +420,28 @@ public class StreamApiTest {
             "Orderlarni umumiy narxga mapini oling (reduce bilan)")
     public void exercise13a() {
         Map<Long, Double> expected = solution13a();
+        Map<Long, Double> collect = orderRepo.findAll().stream()
+                .collect(Collectors.toMap(
+                        order -> order.getId(),
+                        order -> order.getProducts().stream()
+                                .reduce(0D, (summa, product) -> summa + product.getPrice(), Double::sum)
+                ));
+        Assertions.assertEquals(collect,expected);
     }
+
 
     @Test
     @DisplayName("Obtain a data map of product name by category" +
             "Produkt nomini categoriyaga boglab chiqaring")
     public void exercise14() {
         Map<String, List<String>> expected = solution14();
+        Map<String, List<String>> collect = productRepo.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        product -> product.getCategory(),
+                        Collectors.mapping(product -> product.getName(),Collectors.toList())
+                ));
+
+
     }
 
 
@@ -435,6 +450,18 @@ public class StreamApiTest {
             "har bitta Categoriyaga to'g'ri keladigan eng qimmat Productni oling")
     void exercise15() {
         Map<String, Optional<Product>> expected = solution15();
+        Map<String, Optional<Product>> collect = productRepo.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        Product::getCategory))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        stringListEntry -> stringListEntry.
+                                getValue().stream().max(Comparator.comparing(Product::getPrice))
+                ));
+        Assertions.assertEquals(expected,collect);
+
 //		result.forEach((k,v) -> {
 //			log.info("key=" + k + ", value=" + v.get());
 //		});
