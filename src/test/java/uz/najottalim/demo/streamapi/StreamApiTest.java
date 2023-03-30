@@ -403,6 +403,15 @@ public class StreamApiTest {
             "Orderlarni umumiy narxga mapini oling")
     public void exercise13() {
         Map<Order, Double> expected = solution13();
+        Map<Order, Double> collect = orderRepo.findAll().stream()
+                .collect(Collectors.toMap(
+                        order -> order,
+                        order -> order.getProducts()
+                                .stream()
+                                .mapToDouble(Product::getPrice)
+                                .sum()
+                ));
+        Assertions.assertEquals(expected,collect);
     }
 
 
