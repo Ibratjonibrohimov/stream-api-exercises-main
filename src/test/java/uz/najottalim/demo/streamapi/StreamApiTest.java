@@ -372,6 +372,10 @@ public class StreamApiTest {
             "Customerni orderlarini mapini oling")
     public void exercise12() {
         Map<Customer, List<Order>> expected = solution12();
+        Map<Customer, List<Order>> collect = orderRepo.findAll().stream()
+                .collect(Collectors.groupingBy(order -> order.getCustomer())
+                );
+        Assertions.assertEquals(collect,expected);
     }
 
 
