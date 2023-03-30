@@ -474,6 +474,19 @@ public class StreamApiTest {
             "har bitta Categoriyaga to'g'ri keladigan eng qimmat Productni (nomini) oling")
     void exercise15a() {
         Map<String, String> expected = solution15a();
+        Map<String, String> collect = productRepo.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        product -> product.getCategory()
+                )).entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        stringListEntry -> stringListEntry.getKey(),
+                        stringListEntry -> stringListEntry.getValue()
+                                .stream()
+                                .max(Comparator.comparing(Product::getPrice))
+                                .map(product -> product.getName()).orElse("null")
+                ));
+        Assertions.assertEquals(collect,expected);
     }
 
     private List<Product> solution1() {
