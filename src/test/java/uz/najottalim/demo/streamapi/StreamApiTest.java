@@ -384,6 +384,17 @@ public class StreamApiTest {
             "Customer idlarini order idlarga mapini oling")
     public void exercise12a() {
         HashMap<Long, List<Long>> expected = solution12a();
+        Map<Long, List<Long>> collect = orderRepo.findAll().stream()
+                .collect(Collectors.groupingBy(order -> order.getCustomer().getId()))
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                        longListEntry -> longListEntry.getKey(),
+                        longListEntry -> longListEntry.getValue()
+                                .stream()
+                                .map(order -> order.getId())
+                                .collect(Collectors.toList())
+                ));
+        Assertions.assertEquals(expected,collect);
     }
 
 
